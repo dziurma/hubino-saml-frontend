@@ -10,13 +10,15 @@ const App = () => {
     redirect: ''
   });
 
-  const idpDiscoReturnURL = "http://localhost:8080/saml/login?disco=true";
-  const idpDiscoReturnParam = "idp";
+  const apiURL = process.env.REACT_APP_API_URL;
+  const entityID = process.env.REACT_APP_ENTITY_ID;
+  const idpDiscoReturnURL = apiURL + "/saml/login?disco=true";
+  const idpDiscoReturnParam = process.env.REACT_APP_RETURN_PARAM;
 
   const handleDiscover = async () => {
     setLoading(true);
 
-    fetch("http://localhost:8080/saml/discovery?entityID=dummybot-saml&returnIDParam=idp")
+    fetch(`${apiURL}/saml/discovery?entityID=${entityID}&returnIDParam=${idpDiscoReturnParam}`)
       .then(data => data.json()).then(value => {
         setDiscovery(value);
       }).finally(() => {
