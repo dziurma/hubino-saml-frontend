@@ -1,38 +1,99 @@
-.App {
-  text-align: center;
+body
+{
+  padding-bottom:25px;
+  padding-top:25px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.text-white-50
+{
+  color:rgba(255,255,255,.5);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+h6.text-black
+{
+  color:#000;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.spring-green
+{
+  color:#68bd45;
 }
 
-.App-link {
-  color: #61dafb;
+.bg-spring-green
+{
+  background-color:#68bd45;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.border-bottom
+{
+  border-bottom:1px solid #e5e5e5;
 }
+
+.box-shadow
+{
+  box-shadow:0 .25rem .75rem rgba(0,0,0,.05);
+}
+
+.lh-100
+{
+  line-height:1;
+}
+
+.lh-125
+{
+  line-height:1.25;
+}
+
+.lh-150
+{
+  line-height:1.5;
+}
+
+.margin-top-10
+{
+  margin-top:10px;
+}
+
+.margin-bottom-10
+{
+  margin-top:10px;
+}
+
+.container
+{
+  max-width:600px;
+}
+
+.btn-spring
+{
+  background-color:#68bd45;
+  color:#FFF;
+}
+
+footer
+{
+  border-top:1px solid #e5e5e5;
+  color:#696969;
+  font-size: 0.7em;
+  margin-top: 20px;
+  padding-top: 20px;
+  text-align:center;
+}
+
+ul.footer-note
+{
+  list-style-type:none;
+  margin:0 0 10px;
+  padding:0;
+}
+
+#sso-btn a:hover
+{
+  color:rgba(0, 128, 0, 0.589);
+}
+
+footer a:link,footer a:visited,footer a:hover,footer a:active
+{
+  color:green;
+}
+
