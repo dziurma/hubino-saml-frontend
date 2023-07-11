@@ -1,76 +1,70 @@
 import React, { useState } from 'react';
-import SBLogo from './assets/img/spring-boot-saml.png'
+
+import { PageLayout } from './components/PageLayout';
+import { loginRequest } from './authConfig';
+import { callMsGraph } from './graph';
+import { ProfileData } from './components/ProfileData';
+
+import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
+
 import './App.css';
 
-const App = () => {
-  const [isLoading, setLoading] = useState(false);
-  const [discovery, setDiscovery] = useState({
-    idps: '',
-    message: '',
-    redirect: ''
-  });
+import Button from 'react-bootstrap/Button';
 
-  const apiURL = process.env.REACT_APP_API_URL;
-  const entityID = process.env.REACT_APP_ENTITY_ID;
-  const idpDiscoReturnURL = apiURL + "/saml/login?disco=true";
-  const idpDiscoReturnParam = process.env.REACT_APP_RETURN_PARAM;
+const ProfileContent = () => {
+  const { instance, accounts } = useMsal();
+  const [graphData, setGraphData] = useState(null);
 
-  const handleDiscover = async () => {
-    setLoading(true);
-
-    fetch(`${apiURL}/saml/discovery?entityID=${entityID}&returnIDParam=${idpDiscoReturnParam}`)
-      .then(data => data.json()).then(value => {
-        setDiscovery(value);
-      }).finally(() => {
-        setLoading(false);
+  function RequestProfileData() {
+    instance
+      .acquireTokenSilent({
+        ...loginRequest,
+        account: accounts[0],
       })
+      .then((response) => {
+        callMsGraph(response.accessToken).then((response) => setGraphData(response));
+      });
   }
 
   return (
-    <div role="main" className="container">
-      <header className="d-flex align-items-center p-3 my-3 text-white-50 bg-success rounded box-shadow">
-        <img className="mr-3" src={SBLogo} alt="" height="48" />
-        <div className="ms-3 lh-100">
-          <h6 className="mb-0 text-white lh-100">Spring Boot &mdash; SAML 2.0 Service Provider</h6>
-        </div>
-      </header>
-      <section className="my-3 p-3 bg-white rounded box-shadow">
-        {discovery.message === "DISCOVERY_SUCCESS"
-          ?
-          <form action={idpDiscoReturnURL} method="get">
-            <fieldset className="form-group">
-              <div className="form-check">
-                <label className="form-check-label">
-                  <input type="radio" className="form-check-input form-success" name={idpDiscoReturnParam} id={'idp_' + discovery.idps} value={discovery.idps} />
-                  <span className="text-success fw-bold">Azure IDP</span>
-                </label>
-              </div>
-            </fieldset>
+    <>
+      <h5 className="card-title">Welcome {accounts[0]?.name}</h5>
+      <br />
+      {graphData ? (
+        <ProfileData graphData={graphData} />
+      ) : (
+        <Button variant="info" onClick={RequestProfileData}>
+          Request Profile Information
+        </Button>
+      )}
+    </>
+  );
+};
 
-            <small className="d-block text-right mt-3" id="sso-btn">
-              <button type="submit" className="btn btn-success">
-                <i className="fas fa-handshake"></i> Start 3rd Party Login
-              </button>
-            </small>
-          </form>
-          :
-          <div>
-            <h6 className="border-bottom border-gray pb-2 mb-0">The authentication flow, step by step:</h6>
-            <small className="d-block text-right mt-3" id="sso-btn">
-              <button type='button' className="btn btn-success" onClick={handleDiscover}>
-                {isLoading ?
-                  <div className="spinner-border spinner-border-sm" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div> :
-                  <><i className="fas fa-rocket"></i> Get started</>
-                }
-              </button>
-            </small>
-          </div>
-        }
-      </section>
-    </div >
+const MainContent = () => {
+  return (
+    <div className="App">
+      <AuthenticatedTemplate>
+        <ProfileContent />
+      </AuthenticatedTemplate>
+
+      <UnauthenticatedTemplate>
+        <h5>
+          <center>
+            Please sign-in to see your profile information.
+          </center>
+        </h5>
+      </UnauthenticatedTemplate>
+    </div>
+  );
+};
+
+export default function App() {
+  return (
+    <PageLayout>
+      <center>
+        <MainContent />
+      </center>
+    </PageLayout>
   );
 }
-
-export default App;
